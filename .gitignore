@@ -6,3 +6,6 @@ node_modules/
 작업파일/
 public/
 *.log
+assets/*.ogg
+assets/timer-*.b64
+assets/preview-*.b64
