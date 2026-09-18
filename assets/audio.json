@@ -1,0 +1,40 @@
+{
+  "mime": "audio/ogg",
+  "tracks": {
+    "timer": {
+      "parts": [
+        "opus-timer-000.b64",
+        "opus-timer-001.b64",
+        "opus-timer-002.b64",
+        "opus-timer-003.b64",
+        "opus-timer-004.b64",
+        "opus-timer-005.b64",
+        "opus-timer-006.b64",
+        "opus-timer-007.b64",
+        "opus-timer-008.b64",
+        "opus-timer-009.b64",
+        "opus-timer-010.b64",
+        "opus-timer-011.b64",
+        "opus-timer-012.b64",
+        "opus-timer-013.b64",
+        "opus-timer-014.b64",
+        "opus-timer-015.b64",
+        "opus-timer-016.b64",
+        "opus-timer-017.b64",
+        "opus-timer-018.b64",
+        "opus-timer-019.b64",
+        "opus-timer-020.b64",
+        "opus-timer-021.b64"
+      ],
+      "bytes": 2151618,
+      "sha256": "b14335da8e0f31067df5b578dc599e2e3b666ab511f449ce3b6f047dca174cdf"
+    },
+    "preview": {
+      "parts": [
+        "opus-preview-000.b64"
+      ],
+      "bytes": 2233,
+      "sha256": "c1c4813a08953c4e5b38b99dc065cbe16efdee71389fe19a499f6018b3491be2"
+    }
+  }
+}
