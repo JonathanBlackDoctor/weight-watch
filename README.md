@@ -21,7 +21,7 @@ YouTube의 자체 백그라운드 재생 조건은 별도다. 같은 브라우�
 
 GitHub Pages Source를 **GitHub Actions**로 설정한다. `main` push 후 공개 파일만 배포한다. 프로젝트 경로(`/weight-watch/`)와 서비스워커 범위는 상대 URL로 처리한다.
 
-`scripts/make-voices.ps1`은 Windows 한국어 Heami 음성을 생성한다. `scripts/build-audio.py`는 NumPy·imageio-ffmpeg로 음량을 정규화하고 240개 안내를 하나의 타임라인에 배치한다. 생성 시 모든 이벤트 위치와 무음 여부를 검사하며 `assets/timeline.json`에 기록한다. 음성은 빌드 시에만 생성하며 사용자 브라우저의 TTS에 의존하지 않는다.
+`scripts/make-voices.ps1`은 Windows 한국어 Heami 음성을 생성한다. `scripts/build-audio.py`는 NumPy·imageio-ffmpeg로 음량을 정규화하고 240개 안내를 하나의 타임라인에 배치한다. 생성 시 모든 이벤트 위치와 무음 여부를 검사하며 `assets/timeline.json`에 기록한다. 이어서 `scripts/package-audio.py`를 실행하면 배포용 Opus 음원을 base64 조각과 `assets/audio.json`으로 만든다. 브라우저는 조각을 복원하고 SHA-256을 검증하여 하나의 Blob으로 재생한다. 음성은 빌드 시에만 생성하며 사용자 브라우저의 TTS에 의존하지 않는다.
 
 ## 기기 검증
 
