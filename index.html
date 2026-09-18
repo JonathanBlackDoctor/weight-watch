@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#111412">
+  <meta name="description" content="음악과 함께 듣는 운동 타이머. 30초마다 짧은 소리, 1분마다 한국어 음성 안내.">
+  <title>Weight Watch · 운동 타이머</title>
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <main class="app">
+    <header><a class="wordmark" href="./" aria-label="Weight Watch 홈">WEIGHT<span>WATCH</span><i aria-hidden="true"></i></a><span class="edition">VOICE TIMER</span></header>
+    <section class="timer-section" aria-labelledby="title">
+      <div class="eyebrow"><span class="status-dot" id="statusDot"></span><span id="status" role="status">소리 준비 중</span></div>
+      <h1 id="title">운동에 집중하세요.</h1>
+      <p class="intro">시간은 귀로 들으세요.</p>
+      <div class="clock" id="clock">
+        <svg viewBox="0 0 300 300" aria-hidden="true"><circle class="ring-base" cx="150" cy="150" r="140"/><circle id="progressRing" class="ring-progress" cx="150" cy="150" r="140"/><circle class="ring-dot" cx="150" cy="10" r="4"/><circle class="ring-dot" cx="150" cy="290" r="4"/></svg>
+        <div class="clock-face"><span class="clock-label">경과 시간</span><output id="elapsed" aria-label="경과 시간">00:00</output><span class="next-cue" id="nextCue">30초 후 짧은 알림음</span></div>
+      </div>
+      <div class="cue-key"><span><b>30초</b> 짧은 소리</span><span class="divider"></span><span><b>1분</b> 음성 안내</span></div>
+      <div class="controls"><button id="toggle" class="primary" disabled><span id="toggleIcon" aria-hidden="true">▶</span><span id="toggleLabel">소리 준비 중…</span></button><button id="reset" class="reset" disabled aria-label="타이머 초기화"><span aria-hidden="true">↺</span></button></div>
+      <p class="feedback" id="feedback" role="status">안내 음원을 불러오고 있습니다.</p>
+      <button id="retry" class="text-button" hidden>다시 불러오기</button>
+    </section>
+    <section class="settings" aria-label="소리 설정">
+      <div class="volume-heading"><label for="volume">안내 음량</label><output id="volumeValue" for="volume">70%</output></div>
+      <input id="volume" type="range" min="0" max="100" step="5" value="70" aria-label="안내 음량">
+      <div class="sound-bottom"><span>타이머 소리만 조절</span><button class="text-button" id="soundTest" disabled>소리 미리 듣기 <span aria-hidden="true">↗</span></button></div>
+    </section>
+    <details class="guide" id="guide"><summary>음악과 함께 듣는 방법 <span aria-hidden="true">+</span></summary><div class="guide-content">
+      <ol><li>음악 앱에서 음악을 재생하세요.</li><li>이 페이지를 <strong>Firefox</strong>로 열고 시작하세요.</li><li>음악이 멈추면 <strong>Good Lock → Sound Assistant → 멀티 사운드</strong>에서 Firefox의 동시 재생을 허용하세요. 메뉴는 버전에 따라 다를 수 있습니다.</li><li>두 소리가 함께 들리는지 확인한 다음 화면을 잠그세요.</li></ol>
+      <p>화면을 껐을 때 끊긴다면 휴대폰의 Firefox 배터리 설정에서 백그라운드 사용을 허용해 보세요. 첫 사용에는 2분 정도 잠금 상태로 시험해 주세요.</p>
+      <p>YouTube도 자체적으로 백그라운드 재생이 가능해야 합니다. 같은 Firefox의 다른 탭에서 음악이 멈춘다면 음악 앱 또는 다른 브라우저를 사용해 보세요.</p>
+      <p>최대 120분까지 안내합니다. 일시정지한 시간은 제외합니다. 전화·이어폰 버튼은 음악 대신 타이머를 제어할 수 있습니다. 브라우저 강제 종료 후에는 자동 재개되지 않습니다.</p>
+      <p id="offlineStatus">오프라인 사용을 준비하고 있습니다.</p>
+    </div></details>
+    <footer><span>나만의 페이스로.</span><span>최대 120분 · 한국어</span></footer>
+  </main>
+  <audio id="audio" preload="auto"></audio>
+  <audio id="preview" preload="auto"></audio>
+  <noscript>타이머를 사용하려면 브라우저에서 JavaScript를 켜 주세요.</noscript>
+</body>
+</html>
