@@ -1,0 +1,8 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.tools/
+작업파일/
+public/
+*.log
