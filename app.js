@@ -12,6 +12,29 @@ let trackURL;
 let sampleURL;
 let operation = 0;
 let preparing;
+let assetURLs = [];
+
+async function loadAudio() {
+  const response = await fetch('./assets/audio.json');
+  if (!response.ok) throw new Error('audio manifest');
+  const manifest = await response.json();
+  assetURLs = ['./assets/audio.json', ...Object.values(manifest.tracks).flatMap((track) => track.parts.map((part) => `./assets/${part}`))];
+  return Promise.all(['timer', 'preview'].map(async (name) => {
+    const track = manifest.tracks[name];
+    const parts = await Promise.all(track.parts.map(async (part) => {
+      const result = await fetch(`./assets/${part}`);
+      if (!result.ok) throw new Error('audio download');
+      const decoded = atob((await result.text()).trim());
+      return Uint8Array.from(decoded, (character) => character.charCodeAt(0));
+    }));
+    const blob = new Blob(parts, { type: manifest.mime });
+    if (blob.size !== track.bytes) throw new Error('audio size');
+    const digest = await crypto.subtle.digest('SHA-256', await blob.arrayBuffer());
+    const checksum = [...new Uint8Array(digest)].map((value) => value.toString(16).padStart(2, '0')).join('');
+    if (checksum !== track.sha256) throw new Error('audio integrity');
+    return blob;
+  }));
+}
 
 function message(text, error = false) {
   $('feedback').textContent = text;
@@ -41,13 +64,7 @@ async function prepare() {
   message('안내 음원을 불러오고 있습니다.');
   render();
   try {
-    const [track, sample] = await Promise.all(['./assets/timer-120.ogg', './assets/preview.ogg'].map(async (url) => {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error('audio download');
-      const blob = await response.blob();
-      if (blob.size < 100) throw new Error('empty audio');
-      return blob;
-    }));
+    const [track, sample] = await loadAudio();
     if (trackURL) URL.revokeObjectURL(trackURL);
     if (sampleURL) URL.revokeObjectURL(sampleURL);
     trackURL = URL.createObjectURL(track);
@@ -175,8 +192,8 @@ if ('serviceWorker' in navigator) {
     await preparing;
     if (!ready) return;
     // Prime full responses explicitly even on the first visit before the SW controls this page.
-    const cache = await caches.open('weight-watch-v1');
-    await cache.addAll(['./assets/timer-120.ogg', './assets/preview.ogg']);
+    const cache = await caches.open('weight-watch-v2');
+    await cache.addAll(assetURLs);
     $('offlineStatus').textContent = '오프라인 준비 완료. 다음에는 인터넷 없이도 이 페이지와 안내 음원을 사용할 수 있습니다.';
   }).catch(() => {
     $('offlineStatus').textContent = '이번 운동의 음원은 준비되었지만 다음 접속에는 인터넷이 필요할 수 있습니다.';
