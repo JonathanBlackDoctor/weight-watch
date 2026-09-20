@@ -33,7 +33,7 @@ for minute in range(1, 121):
     start = minute * 60 * RATE
     timeline[start:start + len(voice)] = voice
     events.append({'at': minute * 60, 'type': 'voice', 'minute': minute, 'samples': len(voice)})
-length = int(.13 * RATE)
+length = int(.7 * RATE)
 t = np.arange(length) / RATE
 envelope = np.minimum(1, np.arange(length) / (RATE * .008)) * np.minimum(1, np.arange(length)[::-1] / (RATE * .045))
 beep = (np.sin(2 * np.pi * 880 * t) * envelope * 10000).astype('<i2')

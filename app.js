@@ -192,7 +192,7 @@ if ('serviceWorker' in navigator) {
     await preparing;
     if (!ready) return;
     // Prime full responses explicitly even on the first visit before the SW controls this page.
-    const cache = await caches.open('weight-watch-v2');
+    const cache = await caches.open('weight-watch-v3');
     await cache.addAll(assetURLs);
     $('offlineStatus').textContent = '오프라인 준비 완료. 다음에는 인터넷 없이도 이 페이지와 안내 음원을 사용할 수 있습니다.';
   }).catch(() => {

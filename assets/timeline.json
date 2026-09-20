@@ -6,7 +6,7 @@
     {
       "at": 30,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 60,
@@ -17,7 +17,7 @@
     {
       "at": 90,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 120,
@@ -28,7 +28,7 @@
     {
       "at": 150,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 180,
@@ -39,7 +39,7 @@
     {
       "at": 210,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 240,
@@ -50,7 +50,7 @@
     {
       "at": 270,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 300,
@@ -61,7 +61,7 @@
     {
       "at": 330,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 360,
@@ -72,7 +72,7 @@
     {
       "at": 390,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 420,
@@ -83,7 +83,7 @@
     {
       "at": 450,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 480,
@@ -94,7 +94,7 @@
     {
       "at": 510,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 540,
@@ -105,7 +105,7 @@
     {
       "at": 570,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 600,
@@ -116,7 +116,7 @@
     {
       "at": 630,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 660,
@@ -127,7 +127,7 @@
     {
       "at": 690,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 720,
@@ -138,7 +138,7 @@
     {
       "at": 750,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 780,
@@ -149,7 +149,7 @@
     {
       "at": 810,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 840,
@@ -160,7 +160,7 @@
     {
       "at": 870,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 900,
@@ -171,7 +171,7 @@
     {
       "at": 930,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 960,
@@ -182,7 +182,7 @@
     {
       "at": 990,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 1020,
@@ -193,7 +193,7 @@
     {
       "at": 1050,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 1080,
@@ -204,7 +204,7 @@
     {
       "at": 1110,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 1140,
@@ -215,7 +215,7 @@
     {
       "at": 1170,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 1200,
@@ -226,7 +226,7 @@
     {
       "at": 1230,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 1260,
@@ -237,7 +237,7 @@
     {
       "at": 1290,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 1320,
@@ -248,7 +248,7 @@
     {
       "at": 1350,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 1380,
@@ -259,7 +259,7 @@
     {
       "at": 1410,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 1440,
@@ -270,7 +270,7 @@
     {
       "at": 1470,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 1500,
@@ -281,7 +281,7 @@
     {
       "at": 1530,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 1560,
@@ -292,7 +292,7 @@
     {
       "at": 1590,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 1620,
@@ -303,7 +303,7 @@
     {
       "at": 1650,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 1680,
@@ -314,7 +314,7 @@
     {
       "at": 1710,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 1740,
@@ -325,7 +325,7 @@
     {
       "at": 1770,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 1800,
@@ -336,7 +336,7 @@
     {
       "at": 1830,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 1860,
@@ -347,7 +347,7 @@
     {
       "at": 1890,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 1920,
@@ -358,7 +358,7 @@
     {
       "at": 1950,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 1980,
@@ -369,7 +369,7 @@
     {
       "at": 2010,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 2040,
@@ -380,7 +380,7 @@
     {
       "at": 2070,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 2100,
@@ -391,7 +391,7 @@
     {
       "at": 2130,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 2160,
@@ -402,7 +402,7 @@
     {
       "at": 2190,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 2220,
@@ -413,7 +413,7 @@
     {
       "at": 2250,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 2280,
@@ -424,7 +424,7 @@
     {
       "at": 2310,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 2340,
@@ -435,7 +435,7 @@
     {
       "at": 2370,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 2400,
@@ -446,7 +446,7 @@
     {
       "at": 2430,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 2460,
@@ -457,7 +457,7 @@
     {
       "at": 2490,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 2520,
@@ -468,7 +468,7 @@
     {
       "at": 2550,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 2580,
@@ -479,7 +479,7 @@
     {
       "at": 2610,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 2640,
@@ -490,7 +490,7 @@
     {
       "at": 2670,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 2700,
@@ -501,7 +501,7 @@
     {
       "at": 2730,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 2760,
@@ -512,7 +512,7 @@
     {
       "at": 2790,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 2820,
@@ -523,7 +523,7 @@
     {
       "at": 2850,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 2880,
@@ -534,7 +534,7 @@
     {
       "at": 2910,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 2940,
@@ -545,7 +545,7 @@
     {
       "at": 2970,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 3000,
@@ -556,7 +556,7 @@
     {
       "at": 3030,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 3060,
@@ -567,7 +567,7 @@
     {
       "at": 3090,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 3120,
@@ -578,7 +578,7 @@
     {
       "at": 3150,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 3180,
@@ -589,7 +589,7 @@
     {
       "at": 3210,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 3240,
@@ -600,7 +600,7 @@
     {
       "at": 3270,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 3300,
@@ -611,7 +611,7 @@
     {
       "at": 3330,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 3360,
@@ -622,7 +622,7 @@
     {
       "at": 3390,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 3420,
@@ -633,7 +633,7 @@
     {
       "at": 3450,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 3480,
@@ -644,7 +644,7 @@
     {
       "at": 3510,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 3540,
@@ -655,7 +655,7 @@
     {
       "at": 3570,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 3600,
@@ -666,7 +666,7 @@
     {
       "at": 3630,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 3660,
@@ -677,7 +677,7 @@
     {
       "at": 3690,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 3720,
@@ -688,7 +688,7 @@
     {
       "at": 3750,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 3780,
@@ -699,7 +699,7 @@
     {
       "at": 3810,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 3840,
@@ -710,7 +710,7 @@
     {
       "at": 3870,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 3900,
@@ -721,7 +721,7 @@
     {
       "at": 3930,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 3960,
@@ -732,7 +732,7 @@
     {
       "at": 3990,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 4020,
@@ -743,7 +743,7 @@
     {
       "at": 4050,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 4080,
@@ -754,7 +754,7 @@
     {
       "at": 4110,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 4140,
@@ -765,7 +765,7 @@
     {
       "at": 4170,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 4200,
@@ -776,7 +776,7 @@
     {
       "at": 4230,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 4260,
@@ -787,7 +787,7 @@
     {
       "at": 4290,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 4320,
@@ -798,7 +798,7 @@
     {
       "at": 4350,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 4380,
@@ -809,7 +809,7 @@
     {
       "at": 4410,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 4440,
@@ -820,7 +820,7 @@
     {
       "at": 4470,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 4500,
@@ -831,7 +831,7 @@
     {
       "at": 4530,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 4560,
@@ -842,7 +842,7 @@
     {
       "at": 4590,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 4620,
@@ -853,7 +853,7 @@
     {
       "at": 4650,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 4680,
@@ -864,7 +864,7 @@
     {
       "at": 4710,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 4740,
@@ -875,7 +875,7 @@
     {
       "at": 4770,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 4800,
@@ -886,7 +886,7 @@
     {
       "at": 4830,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 4860,
@@ -897,7 +897,7 @@
     {
       "at": 4890,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 4920,
@@ -908,7 +908,7 @@
     {
       "at": 4950,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 4980,
@@ -919,7 +919,7 @@
     {
       "at": 5010,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 5040,
@@ -930,7 +930,7 @@
     {
       "at": 5070,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 5100,
@@ -941,7 +941,7 @@
     {
       "at": 5130,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 5160,
@@ -952,7 +952,7 @@
     {
       "at": 5190,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 5220,
@@ -963,7 +963,7 @@
     {
       "at": 5250,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 5280,
@@ -974,7 +974,7 @@
     {
       "at": 5310,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 5340,
@@ -985,7 +985,7 @@
     {
       "at": 5370,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 5400,
@@ -996,7 +996,7 @@
     {
       "at": 5430,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 5460,
@@ -1007,7 +1007,7 @@
     {
       "at": 5490,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 5520,
@@ -1018,7 +1018,7 @@
     {
       "at": 5550,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 5580,
@@ -1029,7 +1029,7 @@
     {
       "at": 5610,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 5640,
@@ -1040,7 +1040,7 @@
     {
       "at": 5670,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 5700,
@@ -1051,7 +1051,7 @@
     {
       "at": 5730,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 5760,
@@ -1062,7 +1062,7 @@
     {
       "at": 5790,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 5820,
@@ -1073,7 +1073,7 @@
     {
       "at": 5850,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 5880,
@@ -1084,7 +1084,7 @@
     {
       "at": 5910,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 5940,
@@ -1095,7 +1095,7 @@
     {
       "at": 5970,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 6000,
@@ -1106,7 +1106,7 @@
     {
       "at": 6030,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 6060,
@@ -1117,7 +1117,7 @@
     {
       "at": 6090,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 6120,
@@ -1128,7 +1128,7 @@
     {
       "at": 6150,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 6180,
@@ -1139,7 +1139,7 @@
     {
       "at": 6210,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 6240,
@@ -1150,7 +1150,7 @@
     {
       "at": 6270,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 6300,
@@ -1161,7 +1161,7 @@
     {
       "at": 6330,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 6360,
@@ -1172,7 +1172,7 @@
     {
       "at": 6390,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 6420,
@@ -1183,7 +1183,7 @@
     {
       "at": 6450,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 6480,
@@ -1194,7 +1194,7 @@
     {
       "at": 6510,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 6540,
@@ -1205,7 +1205,7 @@
     {
       "at": 6570,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 6600,
@@ -1216,7 +1216,7 @@
     {
       "at": 6630,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 6660,
@@ -1227,7 +1227,7 @@
     {
       "at": 6690,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 6720,
@@ -1238,7 +1238,7 @@
     {
       "at": 6750,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 6780,
@@ -1249,7 +1249,7 @@
     {
       "at": 6810,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 6840,
@@ -1260,7 +1260,7 @@
     {
       "at": 6870,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 6900,
@@ -1271,7 +1271,7 @@
     {
       "at": 6930,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 6960,
@@ -1282,7 +1282,7 @@
     {
       "at": 6990,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 7020,
@@ -1293,7 +1293,7 @@
     {
       "at": 7050,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 7080,
@@ -1304,7 +1304,7 @@
     {
       "at": 7110,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 7140,
@@ -1315,7 +1315,7 @@
     {
       "at": 7170,
       "type": "beep",
-      "samples": 2080
+      "samples": 11200
     },
     {
       "at": 7200,
