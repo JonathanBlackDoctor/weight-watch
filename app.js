@@ -1,5 +1,9 @@
 import { formatTime, nextCue, readVolume } from './timer.js';
 
+const AUDIO_VERSION = 'long-beep-1';
+const CACHE = 'weight-watch-v4';
+const assetURL = (path) => `./assets/${path}?v=${AUDIO_VERSION}`;
+
 const $ = (id) => document.getElementById(id);
 const audio = $('audio');
 const preview = $('preview');
@@ -15,14 +19,14 @@ let preparing;
 let assetURLs = [];
 
 async function loadAudio() {
-  const response = await fetch('./assets/audio.json');
+  const response = await fetch(assetURL('audio.json'));
   if (!response.ok) throw new Error('audio manifest');
   const manifest = await response.json();
-  assetURLs = ['./assets/audio.json', ...Object.values(manifest.tracks).flatMap((track) => track.parts.map((part) => `./assets/${part}`))];
+  assetURLs = [assetURL('audio.json'), ...Object.values(manifest.tracks).flatMap((track) => track.parts.map((part) => assetURL(part)))];
   return Promise.all(['timer', 'preview'].map(async (name) => {
     const track = manifest.tracks[name];
     const parts = await Promise.all(track.parts.map(async (part) => {
-      const result = await fetch(`./assets/${part}`);
+      const result = await fetch(assetURL(part));
       if (!result.ok) throw new Error('audio download');
       const decoded = atob((await result.text()).trim());
       return Uint8Array.from(decoded, (character) => character.charCodeAt(0));
@@ -86,7 +90,7 @@ async function prepare() {
     });
     preview.src = sampleURL;
     ready = true;
-    message('음악을 켜고 시작하세요. 첫 사용에는 화면 잠금 테스트를 해주세요.');
+    message('0.7초 부저음 준비 완료. 소리 미리 듣기로 확인하세요.');
     // The complete track is in memory; no network request or JS alarm is needed during a session.
     $('offlineStatus').textContent = '이번 운동에 필요한 음원 다운로드가 완료되었습니다. 화면 잠금 동작은 기기 설정에 따라 달라질 수 있습니다.';
   } catch {
@@ -187,12 +191,12 @@ if ('mediaSession' in navigator) {
 }
 preparing = prepare();
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').then(async () => {
+  navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then(async () => {
     await navigator.serviceWorker.ready;
     await preparing;
     if (!ready) return;
     // Prime full responses explicitly even on the first visit before the SW controls this page.
-    const cache = await caches.open('weight-watch-v3');
+    const cache = await caches.open(CACHE);
     await cache.addAll(assetURLs);
     $('offlineStatus').textContent = '오프라인 준비 완료. 다음에는 인터넷 없이도 이 페이지와 안내 음원을 사용할 수 있습니다.';
   }).catch(() => {
