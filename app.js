@@ -169,7 +169,19 @@ function message(text, error = false) {
   $('feedback').textContent = text;
   $('feedback').classList.toggle('error', error);
 }
+function updateTimerGain() {
+  if (!timerGain) return;
+  const volume = readVolume($('volume').value) / 100;
+  const phase = ((audio.currentTime % 60) + 60) % 60;
+  // The source file was authored with beep peak 10,000 vs voice peak 24,000.
+  // Boost only the 0.7 s :30 beep window by ~2.35x so both cues land at
+  // nearly the same perceived loudness before the shared compressor.
+  const inBeep = phase >= 29.95 && phase <= 30.78;
+  timerGain.gain.value = PRE_GAIN * volume * (inBeep ? BEEP_GAIN_MULTIPLIER : 1);
+}
+
 function render() {
+  updateTimerGain();
   const running = ready && !audio.paused && !audio.ended;
   $('elapsed').textContent = formatTime(audio.currentTime);
   $('nextCue').textContent = nextCue(audio.currentTime);
@@ -348,7 +360,11 @@ volumeSlider.value = volumePrefVersion === VOLUME_PREF_VERSION ? readVolume(save
 
 function setVolume({ persist = true } = {}) {
   const value = readVolume(volumeSlider.value);
-  audio.volume = preview.volume = value / 100;
+  // Keep the media element at unity; Web Audio gains own the timer volume.
+  // Applying the slider both here and in timerGain would square the volume.
+  audio.volume = 1;
+  preview.volume = 1;
+  if (timerGain) updateTimerGain();
   if (previewGain) previewGain.gain.value = PRE_GAIN * (value / 100);
   $('volumeValue').textContent = `${value}%`;
   if (!persist) return;
