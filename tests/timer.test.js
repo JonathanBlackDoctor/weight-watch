@@ -15,5 +15,5 @@ test('one cue per half minute, voice replaces the beep at each minute', () => {
   assert.equal(nextCue(7200), '120분 안내 · 수고하셨습니다');
 });
 test('volume tolerates missing, corrupt and out of range local preferences', () => {
-  for (const [input, expected] of [[null,70],['',70],['oops',70],['0',0],['120',100],['-5',0],['35',35]]) assert.equal(readVolume(input),expected);
+  for (const [input, expected] of [[null,100],['',100],['oops',100],['0',0],['120',100],['-5',0],['35',35]]) assert.equal(readVolume(input),expected);
 });
