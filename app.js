@@ -2,6 +2,8 @@ import { adjustTime, formatTime, nextCue, readVolume } from './timer.js';
 
 const AUDIO_VERSION = 'balanced-v9';
 const CACHE = 'weight-watch-v9';
+const AUDIO_DB = 'weight-watch-audio';
+const AUDIO_DB_STORE = 'tracks';
 const assetURL = (path) => `./assets/${path}?v=${AUDIO_VERSION}`;
 
 const $ = (id) => document.getElementById(id);
@@ -26,8 +28,10 @@ let masterGain;
 let previewBlob;
 let previewBuffer;
 let previewSourceNode;
-const PRE_GAIN = 8;
-const MASTER_GAIN = 5;
+// Push the source into a compressor for perceived loudness, but never boost
+// after compression. The old 8x -> compressor -> 5x chain clipped badly.
+const PRE_GAIN = 3;
+const MASTER_GAIN = 0.95;
 
 function ensureAudioBoost() {
   if (!audioContext) {
@@ -46,11 +50,11 @@ function ensureAudioBoost() {
     // difference while making 70% substantially louder than the old mix.
     timerGain.gain.value = PRE_GAIN;
     previewGain.gain.value = PRE_GAIN * (readVolume($('volume').value) / 100);
-    compressor.threshold.value = -18;
-    compressor.knee.value = 2;
-    compressor.ratio.value = 12;
-    compressor.attack.value = 0.003;
-    compressor.release.value = 0.18;
+    compressor.threshold.value = -12;
+    compressor.knee.value = 4;
+    compressor.ratio.value = 8;
+    compressor.attack.value = 0.005;
+    compressor.release.value = 0.12;
     masterGain.gain.value = MASTER_GAIN;
 
     timerSource.connect(timerGain).connect(compressor);
@@ -88,26 +92,74 @@ async function playStartCue() {
   second.stop(now + 0.55);
 }
 
+function openAudioDB() {
+  return new Promise((resolve, reject) => {
+    if (!('indexedDB' in window)) return resolve(null);
+    const request = indexedDB.open(AUDIO_DB, 1);
+    request.onupgradeneeded = () => {
+      if (!request.result.objectStoreNames.contains(AUDIO_DB_STORE)) {
+        request.result.createObjectStore(AUDIO_DB_STORE);
+      }
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => resolve(null);
+  });
+}
+
+async function readStoredTrack(name, expectedBytes) {
+  const db = await openAudioDB();
+  if (!db) return null;
+  return new Promise((resolve) => {
+    const request = db.transaction(AUDIO_DB_STORE, 'readonly').objectStore(AUDIO_DB_STORE).get(`${AUDIO_VERSION}:${name}`);
+    request.onsuccess = () => {
+      const blob = request.result;
+      resolve(blob instanceof Blob && blob.size === expectedBytes ? blob : null);
+    };
+    request.onerror = () => resolve(null);
+  });
+}
+
+async function storeTrack(name, blob) {
+  const db = await openAudioDB();
+  if (!db) return;
+  await new Promise((resolve) => {
+    const tx = db.transaction(AUDIO_DB_STORE, 'readwrite');
+    tx.objectStore(AUDIO_DB_STORE).put(blob, `${AUDIO_VERSION}:${name}`);
+    tx.oncomplete = resolve;
+    tx.onerror = resolve;
+    tx.onabort = resolve;
+  });
+}
+
+async function loadTrack(manifest, name) {
+  const track = manifest.tracks[name];
+  const stored = await readStoredTrack(name, track.bytes);
+  if (stored) return stored;
+
+  const parts = await Promise.all(track.parts.map(async (part) => {
+    const result = await fetch(assetURL(part));
+    if (!result.ok) throw new Error('audio download');
+    const decoded = atob((await result.text()).trim());
+    return Uint8Array.from(decoded, (character) => character.charCodeAt(0));
+  }));
+  const blob = new Blob(parts, { type: manifest.mime });
+  if (blob.size !== track.bytes) throw new Error('audio size');
+
+  // Integrity-check only the first assembly. Later launches use the verified Blob
+  // directly from IndexedDB instead of decoding ~3.6 MB of Base64 again.
+  const digest = await crypto.subtle.digest('SHA-256', await blob.arrayBuffer());
+  const checksum = [...new Uint8Array(digest)].map((value) => value.toString(16).padStart(2, '0')).join('');
+  if (checksum !== track.sha256) throw new Error('audio integrity');
+  await storeTrack(name, blob);
+  return blob;
+}
+
 async function loadAudio() {
   const response = await fetch(assetURL('audio.json'));
   if (!response.ok) throw new Error('audio manifest');
   const manifest = await response.json();
   assetURLs = [assetURL('audio.json'), ...Object.values(manifest.tracks).flatMap((track) => track.parts.map((part) => assetURL(part)))];
-  return Promise.all(['timer', 'preview'].map(async (name) => {
-    const track = manifest.tracks[name];
-    const parts = await Promise.all(track.parts.map(async (part) => {
-      const result = await fetch(assetURL(part));
-      if (!result.ok) throw new Error('audio download');
-      const decoded = atob((await result.text()).trim());
-      return Uint8Array.from(decoded, (character) => character.charCodeAt(0));
-    }));
-    const blob = new Blob(parts, { type: manifest.mime });
-    if (blob.size !== track.bytes) throw new Error('audio size');
-    const digest = await crypto.subtle.digest('SHA-256', await blob.arrayBuffer());
-    const checksum = [...new Uint8Array(digest)].map((value) => value.toString(16).padStart(2, '0')).join('');
-    if (checksum !== track.sha256) throw new Error('audio integrity');
-    return blob;
-  }));
+  return Promise.all(['timer', 'preview'].map((name) => loadTrack(manifest, name)));
 }
 
 function message(text, error = false) {
