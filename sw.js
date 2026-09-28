@@ -1,5 +1,5 @@
-const CACHE = 'weight-watch-v7';
-const SHELL = ['./', './index.html', './style.css?v=7', './app.js?v=7', './timer.js', './icon.svg', './manifest.webmanifest'];
+const CACHE = 'weight-watch-v8';
+const SHELL = ['./', './index.html', './style.css?v=8', './app.js?v=8', './timer.js', './icon.svg', './manifest.webmanifest'];
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);

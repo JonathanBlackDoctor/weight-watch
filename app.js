@@ -1,7 +1,7 @@
-import { formatTime, nextCue, readVolume } from './timer.js';
+import { adjustTime, formatTime, nextCue, readVolume } from './timer.js';
 
-const AUDIO_VERSION = 'long-beep-1';
-const CACHE = 'weight-watch-v7';
+const AUDIO_VERSION = 'balanced-v8';
+const CACHE = 'weight-watch-v8';
 const assetURL = (path) => `./assets/${path}?v=${AUDIO_VERSION}`;
 
 const $ = (id) => document.getElementById(id);
@@ -20,7 +20,13 @@ let assetURLs = [];
 let audioContext;
 let timerGain;
 let previewGain;
-let limiter;
+let compressor;
+let masterGain;
+let previewBlob;
+let previewBuffer;
+let previewSourceNode;
+const PRE_GAIN = 8;
+const MASTER_GAIN = 5;
 
 function ensureAudioBoost() {
   if (!audioContext) {
@@ -29,23 +35,26 @@ function ensureAudioBoost() {
     audioContext = new AudioContextClass();
 
     const timerSource = audioContext.createMediaElementSource(audio);
-    const previewSource = audioContext.createMediaElementSource(preview);
     timerGain = audioContext.createGain();
     previewGain = audioContext.createGain();
-    limiter = audioContext.createDynamicsCompressor();
+    compressor = audioContext.createDynamicsCompressor();
+    masterGain = audioContext.createGain();
 
-    // Stronger boost for both the 30-second buzzer and spoken minute cues.
-    // The limiter catches peaks so the extra level is loud without harsh clipping.
-    timerGain.gain.value = 4.0;
-    previewGain.gain.value = 4.0;
-    limiter.threshold.value = -4;
-    limiter.knee.value = 0;
-    limiter.ratio.value = 20;
-    limiter.attack.value = 0.002;
-    limiter.release.value = 0.12;
+    // Drive both the quieter buzzer and louder speech into the same strong
+    // compressor, then restore level afterwards. This narrows their loudness
+    // difference while making 70% substantially louder than the old mix.
+    timerGain.gain.value = PRE_GAIN;
+    previewGain.gain.value = PRE_GAIN * (readVolume($('volume').value) / 100);
+    compressor.threshold.value = -18;
+    compressor.knee.value = 2;
+    compressor.ratio.value = 12;
+    compressor.attack.value = 0.003;
+    compressor.release.value = 0.18;
+    masterGain.gain.value = MASTER_GAIN;
 
-    timerSource.connect(timerGain).connect(limiter).connect(audioContext.destination);
-    previewSource.connect(previewGain).connect(limiter);
+    timerSource.connect(timerGain).connect(compressor);
+    previewGain.connect(compressor);
+    compressor.connect(masterGain).connect(audioContext.destination);
   }
   if (audioContext.state === 'suspended') return audioContext.resume();
 }
@@ -56,11 +65,12 @@ async function playStartCue() {
 
   const now = audioContext.currentTime;
   const cueGain = audioContext.createGain();
+  const level = PRE_GAIN * (readVolume($('volume').value) / 100);
   cueGain.gain.setValueAtTime(0.0001, now);
-  cueGain.gain.exponentialRampToValueAtTime(1.0, now + 0.015);
-  cueGain.gain.setValueAtTime(1.0, now + 0.42);
+  cueGain.gain.exponentialRampToValueAtTime(Math.max(0.0001, level), now + 0.015);
+  cueGain.gain.setValueAtTime(Math.max(0.0001, level), now + 0.42);
   cueGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
-  cueGain.connect(limiter);
+  cueGain.connect(compressor);
 
   const first = audioContext.createOscillator();
   first.type = 'sine';
@@ -116,6 +126,8 @@ function render() {
   $('toggle').disabled = !ready || pendingPlay;
   $('reset').disabled = !ready;
   $('soundTest').disabled = !ready || running || pendingPlay;
+  $('rewind5').disabled = !ready || pendingPlay || audio.currentTime <= 0;
+  $('forward5').disabled = !ready || pendingPlay || audio.currentTime >= 120 * 60;
   if ('mediaSession' in navigator) navigator.mediaSession.playbackState = running ? 'playing' : 'paused';
 }
 
@@ -147,22 +159,8 @@ async function prepare() {
       audio.src = trackURL;
       audio.load();
     });
-    preview.src = sampleURL;
-    preview.load();
-    await new Promise((resolve, reject) => {
-      if (preview.readyState >= 2) return resolve();
-      const timeout = setTimeout(() => finish(new Error('preview decoding')), 10000);
-      const onReady = () => finish();
-      const onError = () => finish(new Error('preview format'));
-      const finish = (error) => {
-        clearTimeout(timeout);
-        preview.removeEventListener('loadeddata', onReady);
-        preview.removeEventListener('error', onError);
-        error ? reject(error) : resolve();
-      };
-      preview.addEventListener('loadeddata', onReady, { once: true });
-      preview.addEventListener('error', onError, { once: true });
-    });
+    previewBlob = sample;
+    previewBuffer = null;
     ready = true;
     message('0.7초 부저음 준비 완료. 소리 미리 듣기로 확인하세요.');
     // The complete track is in memory; no network request or JS alarm is needed during a session.
@@ -184,6 +182,10 @@ async function play() {
   stalled = false;
   preview.pause();
   preview.currentTime = 0;
+  if (previewSourceNode) {
+    try { previewSourceNode.stop(); } catch { /* already stopped */ }
+    previewSourceNode = null;
+  }
   if (audio.ended) audio.currentTime = 0;
   render();
   try {
@@ -217,35 +219,40 @@ $('reset').addEventListener('click', () => {
   audio.currentTime = 0;
   preview.pause();
   preview.currentTime = 0;
+  if (previewSourceNode) {
+    try { previewSourceNode.stop(); } catch { /* already stopped */ }
+    previewSourceNode = null;
+  }
   message('00:00으로 돌아왔습니다. 준비되면 시작하세요.');
   render();
 });
+function seekBy(delta) {
+  if (!ready || pendingPlay) return;
+  audio.currentTime = adjustTime(audio.currentTime, delta);
+  message(`${delta > 0 ? '+' : '−'}5초 이동했습니다.`);
+  render();
+}
+$('rewind5').addEventListener('click', () => seekBy(-5));
+$('forward5').addEventListener('click', () => seekBy(5));
 $('soundTest').addEventListener('click', async () => {
-  if (!audio.paused || !ready) return;
-  preview.pause();
-  preview.currentTime = 0;
+  if (!audio.paused || !ready || !previewBlob) return;
   try {
     await ensureAudioBoost();
-    if (preview.readyState < 2) {
-      await new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => finish(new Error('preview timeout')), 5000);
-        const onReady = () => finish();
-        const onError = () => finish(new Error('preview error'));
-        const finish = (error) => {
-          clearTimeout(timeout);
-          preview.removeEventListener('canplay', onReady);
-          preview.removeEventListener('error', onError);
-          error ? reject(error) : resolve();
-        };
-        preview.addEventListener('canplay', onReady, { once: true });
-        preview.addEventListener('error', onError, { once: true });
-        preview.load();
-      });
+    if (!audioContext) throw new Error('Web Audio unavailable');
+    if (!previewBuffer) {
+      previewBuffer = await audioContext.decodeAudioData(await previewBlob.arrayBuffer());
     }
-    await preview.play();
-    message('증폭된 안내음을 재생 중입니다.');
+    if (previewSourceNode) {
+      try { previewSourceNode.stop(); } catch { /* already stopped */ }
+    }
+    previewSourceNode = audioContext.createBufferSource();
+    previewSourceNode.buffer = previewBuffer;
+    previewSourceNode.connect(previewGain);
+    previewSourceNode.onended = () => { previewSourceNode = null; };
+    previewSourceNode.start();
+    message('부저와 음성 안내를 차례로 미리 듣는 중입니다.');
   } catch {
-    message('미리 듣기를 재생하지 못했습니다. 페이지를 새로고침한 뒤 다시 눌러 주세요.', true);
+    message('미리 듣기를 재생하지 못했습니다. 브라우저의 미디어 재생 권한을 확인해 주세요.', true);
   }
 });
 $('retry').addEventListener('click', () => { preparing = prepare(); });
@@ -264,6 +271,7 @@ volumeSlider.value = volumePrefVersion === VOLUME_PREF_VERSION ? readVolume(save
 function setVolume({ persist = true } = {}) {
   const value = readVolume(volumeSlider.value);
   audio.volume = preview.volume = value / 100;
+  if (previewGain) previewGain.gain.value = PRE_GAIN * (value / 100);
   $('volumeValue').textContent = `${value}%`;
   if (!persist) return;
   try {

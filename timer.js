@@ -10,6 +10,11 @@ export function nextCue(seconds) {
   const remaining = Math.max(1, Math.ceil(next - current));
   return next % 60 === 0 ? `${remaining}초 후 “${next / 60}분”` : `${remaining}초 후 짧은 알림음`;
 }
+export function adjustTime(seconds, delta) {
+  const current = Number(seconds) || 0;
+  const change = Number(delta) || 0;
+  return Math.max(0, Math.min(MAX_SECONDS, current + change));
+}
 export function readVolume(value) {
   if (value === null || value === undefined || value === '') return 70;
   const number = Number(value);

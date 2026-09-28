@@ -8,8 +8,8 @@
   <title>Weight Watch · 운동 타이머</title>
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./style.css?v=7">
-  <script type="module" src="./app.js?v=7"></script>
+  <link rel="stylesheet" href="./style.css?v=8">
+  <script type="module" src="./app.js?v=8"></script>
 </head>
 <body>
   <main class="app">
@@ -23,6 +23,7 @@
         <div class="clock-face"><span class="clock-label">경과 시간</span><output id="elapsed" aria-label="경과 시간">00:00</output><span class="next-cue" id="nextCue">30초 후 짧은 알림음</span></div>
       </div>
       <div class="cue-key"><span><b>30초</b> 짧은 소리</span><span class="divider"></span><span><b>1분</b> 음성 안내</span></div>
+      <div class="time-adjust" aria-label="타이머 시간 조절"><button id="rewind5" type="button" disabled>−5초</button><button id="forward5" type="button" disabled>+5초</button></div>
       <div class="controls"><button id="toggle" class="primary" disabled><span id="toggleIcon" aria-hidden="true">▶</span><span id="toggleLabel">소리 준비 중…</span></button><button id="reset" class="reset" disabled aria-label="타이머 초기화"><span aria-hidden="true">↺</span></button></div>
       <p class="feedback" id="feedback" role="status">안내 음원을 불러오고 있습니다.</p>
       <button id="retry" class="text-button" hidden>다시 불러오기</button>
