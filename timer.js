@@ -11,7 +11,7 @@ export function nextCue(seconds) {
   return next % 60 === 0 ? `${remaining}초 후 “${next / 60}분”` : `${remaining}초 후 짧은 알림음`;
 }
 export function readVolume(value) {
-  if (value === null || value === undefined || value === '') return 70;
+  if (value === null || value === undefined || value === '') return 100;
   const number = Number(value);
-  return Number.isFinite(number) ? Math.max(0, Math.min(100, number)) : 70;
+  return Number.isFinite(number) ? Math.max(0, Math.min(100, number)) : 100;
 }
