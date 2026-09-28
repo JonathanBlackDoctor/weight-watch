@@ -1,7 +1,7 @@
 import { formatTime, nextCue, readVolume } from './timer.js';
 
 const AUDIO_VERSION = 'long-beep-1';
-const CACHE = 'weight-watch-v6';
+const CACHE = 'weight-watch-v7';
 const assetURL = (path) => `./assets/${path}?v=${AUDIO_VERSION}`;
 
 const $ = (id) => document.getElementById(id);
@@ -20,6 +20,7 @@ let assetURLs = [];
 let audioContext;
 let timerGain;
 let previewGain;
+let limiter;
 
 function ensureAudioBoost() {
   if (!audioContext) {
@@ -31,16 +32,49 @@ function ensureAudioBoost() {
     const previewSource = audioContext.createMediaElementSource(preview);
     timerGain = audioContext.createGain();
     previewGain = audioContext.createGain();
+    limiter = audioContext.createDynamicsCompressor();
 
-    // About +7 dB at 100%. The source track itself has headroom, so this makes
-    // cues stand out over music without changing the user's system volume.
-    timerGain.gain.value = 2.25;
-    previewGain.gain.value = 2.25;
+    // Stronger boost for both the 30-second buzzer and spoken minute cues.
+    // The limiter catches peaks so the extra level is loud without harsh clipping.
+    timerGain.gain.value = 4.0;
+    previewGain.gain.value = 4.0;
+    limiter.threshold.value = -4;
+    limiter.knee.value = 0;
+    limiter.ratio.value = 20;
+    limiter.attack.value = 0.002;
+    limiter.release.value = 0.12;
 
-    timerSource.connect(timerGain).connect(audioContext.destination);
-    previewSource.connect(previewGain).connect(audioContext.destination);
+    timerSource.connect(timerGain).connect(limiter).connect(audioContext.destination);
+    previewSource.connect(previewGain).connect(limiter);
   }
   if (audioContext.state === 'suspended') return audioContext.resume();
+}
+
+async function playStartCue() {
+  await ensureAudioBoost();
+  if (!audioContext) return;
+
+  const now = audioContext.currentTime;
+  const cueGain = audioContext.createGain();
+  cueGain.gain.setValueAtTime(0.0001, now);
+  cueGain.gain.exponentialRampToValueAtTime(1.0, now + 0.015);
+  cueGain.gain.setValueAtTime(1.0, now + 0.42);
+  cueGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
+  cueGain.connect(limiter);
+
+  const first = audioContext.createOscillator();
+  first.type = 'sine';
+  first.frequency.value = 880;
+  first.connect(cueGain);
+  first.start(now);
+  first.stop(now + 0.22);
+
+  const second = audioContext.createOscillator();
+  second.type = 'sine';
+  second.frequency.value = 1175;
+  second.connect(cueGain);
+  second.start(now + 0.26);
+  second.stop(now + 0.55);
 }
 
 async function loadAudio() {
@@ -154,6 +188,8 @@ async function play() {
   render();
   try {
     await ensureAudioBoost();
+    const startingFresh = audio.currentTime < 0.1;
+    if (startingFresh) await playStartCue();
     await audio.play();
     if (token !== operation) return;
     message('30초마다 짧은 소리, 매분 경과 시간을 알려드려요.');
@@ -214,7 +250,7 @@ $('soundTest').addEventListener('click', async () => {
 });
 $('retry').addEventListener('click', () => { preparing = prepare(); });
 const volumeSlider = $('volume');
-const VOLUME_PREF_VERSION = '2';
+const VOLUME_PREF_VERSION = '3';
 let savedVolume = null;
 let volumePrefVersion = null;
 try {
@@ -222,9 +258,8 @@ try {
   volumePrefVersion = localStorage.getItem('weight-watch-volume-version');
 } catch { /* storage can be disabled */ }
 
-// Version 2 raises the default from 70% to 100%. Existing installs used to save
-// the old default automatically, so migrate once even if 70% is already stored.
-volumeSlider.value = volumePrefVersion === VOLUME_PREF_VERSION ? readVolume(savedVolume) : 100;
+// Version 3 restores a 70% default while keeping the stronger audio mastering.
+volumeSlider.value = volumePrefVersion === VOLUME_PREF_VERSION ? readVolume(savedVolume) : 70;
 
 function setVolume({ persist = true } = {}) {
   const value = readVolume(volumeSlider.value);
