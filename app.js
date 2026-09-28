@@ -30,8 +30,8 @@ let previewBuffer;
 let previewSourceNode;
 // Push the source into a compressor for perceived loudness, but never boost
 // after compression. The old 8x -> compressor -> 5x chain clipped badly.
-const PRE_GAIN = 3;
-const MASTER_GAIN = 0.95;
+const PRE_GAIN = 5;
+const MASTER_GAIN = 3.6;
 
 function ensureAudioBoost() {
   if (!audioContext) {
@@ -50,11 +50,14 @@ function ensureAudioBoost() {
     // difference while making 70% substantially louder than the old mix.
     timerGain.gain.value = PRE_GAIN;
     previewGain.gain.value = PRE_GAIN * (readVolume($('volume').value) / 100);
-    compressor.threshold.value = -12;
-    compressor.knee.value = 4;
-    compressor.ratio.value = 8;
-    compressor.attack.value = 0.005;
-    compressor.release.value = 0.12;
+    // Heavy leveling: the source buzzer is ~7.6 dB quieter than the spoken
+    // cues, so compress both hard and add makeup gain after compression.
+    // This raises overall loudness while keeping peaks controlled.
+    compressor.threshold.value = -18;
+    compressor.knee.value = 2;
+    compressor.ratio.value = 20;
+    compressor.attack.value = 0.002;
+    compressor.release.value = 0.10;
     masterGain.gain.value = MASTER_GAIN;
 
     timerSource.connect(timerGain).connect(compressor);
