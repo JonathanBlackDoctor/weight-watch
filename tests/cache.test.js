@@ -21,7 +21,7 @@ function worker(offline = false) {
       clients: { claim: async () => {} },
     },
     caches: {
-      open: async (name) => { assert.equal(name, 'weight-watch-v8'); return cache; },
+      open: async (name) => { assert.equal(name, 'weight-watch-v9'); return cache; },
       match: async () => { throw new Error('Must not read old global caches'); },
     },
     fetch: async () => { if (offline) throw new Error('offline'); calls.push('network'); return response; },
@@ -32,7 +32,7 @@ function worker(offline = false) {
 }
 async function request(worker, mode) {
   let result;
-  worker.handlers.fetch({ request: { method: 'GET', mode, url: 'https://example.com/weight-watch/?v=8' }, respondWith: (promise) => { result = promise; } });
+  worker.handlers.fetch({ request: { method: 'GET', mode, url: 'https://example.com/weight-watch/?v=9' }, respondWith: (promise) => { result = promise; } });
   return result;
 }
 test('new worker activates after caching its shell without waiting for all tabs to close', async () => {

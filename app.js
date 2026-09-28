@@ -1,7 +1,7 @@
 import { adjustTime, formatTime, nextCue, readVolume } from './timer.js';
 
-const AUDIO_VERSION = 'balanced-v8';
-const CACHE = 'weight-watch-v8';
+const AUDIO_VERSION = 'balanced-v9';
+const CACHE = 'weight-watch-v9';
 const assetURL = (path) => `./assets/${path}?v=${AUDIO_VERSION}`;
 
 const $ = (id) => document.getElementById(id);
@@ -12,6 +12,7 @@ let loading = false;
 let wantsPlay = false;
 let pendingPlay = false;
 let stalled = false;
+let autoplayBlocked = false;
 let trackURL;
 let sampleURL;
 let operation = 0;
@@ -172,9 +173,14 @@ async function prepare() {
     loading = false;
     render();
   }
+  if (ready) {
+    // Start as soon as the page is ready. Browsers that allow audible autoplay
+    // will begin immediately; blocked browsers fall back to the first neutral tap.
+    await play({ automatic: true });
+  }
 }
 
-async function play() {
+async function play({ automatic = false } = {}) {
   if (!ready || pendingPlay) return;
   const token = ++operation;
   pendingPlay = true;
@@ -194,11 +200,17 @@ async function play() {
     if (startingFresh) await playStartCue();
     await audio.play();
     if (token !== operation) return;
+    autoplayBlocked = false;
     message('30초마다 짧은 소리, 매분 경과 시간을 알려드려요.');
   } catch {
     if (token !== operation) return;
     wantsPlay = false;
-    message('재생이 중단되었습니다. 시작을 다시 눌러 주세요.', true);
+    if (automatic) {
+      autoplayBlocked = true;
+      message('브라우저가 자동 소리 재생을 막았습니다. 화면 빈 곳을 한 번 터치하면 바로 시작합니다.', true);
+    } else {
+      message('재생이 중단되었습니다. 시작을 다시 눌러 주세요.', true);
+    }
   } finally {
     if (token === operation) pendingPlay = false;
     render();
@@ -214,6 +226,17 @@ function pause() {
   render();
 }
 $('toggle').addEventListener('click', () => audio.paused ? play() : pause());
+
+async function resumeBlockedAutoplay(event) {
+  if (!autoplayBlocked || !ready || pendingPlay || !audio.paused) return;
+  const interactive = event.target?.closest?.('button,input,summary,a');
+  if (interactive) return;
+  await play();
+}
+document.addEventListener('pointerdown', resumeBlockedAutoplay);
+document.addEventListener('keydown', (event) => {
+  if (autoplayBlocked && (event.key === 'Enter' || event.key === ' ')) play();
+});
 $('reset').addEventListener('click', () => {
   pause();
   audio.currentTime = 0;
