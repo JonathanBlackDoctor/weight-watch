@@ -149,16 +149,75 @@ $('soundTest').addEventListener('click', async () => {
   try { await preview.play(); } catch { message('소리 재생을 허용한 뒤 다시 눌러 주세요.', true); }
 });
 $('retry').addEventListener('click', () => { preparing = prepare(); });
+const volumeSlider = $('volume');
+const VOLUME_PREF_VERSION = '2';
 let savedVolume = null;
-try { savedVolume = localStorage.getItem('weight-watch-volume'); } catch { /* storage can be disabled */ }
-$('volume').value = readVolume(savedVolume);
-function setVolume() {
-  const value = readVolume($('volume').value);
+let volumePrefVersion = null;
+try {
+  savedVolume = localStorage.getItem('weight-watch-volume');
+  volumePrefVersion = localStorage.getItem('weight-watch-volume-version');
+} catch { /* storage can be disabled */ }
+
+// Version 2 raises the default from 70% to 100%. Existing installs used to save
+// the old default automatically, so migrate once even if 70% is already stored.
+volumeSlider.value = volumePrefVersion === VOLUME_PREF_VERSION ? readVolume(savedVolume) : 100;
+
+function setVolume({ persist = true } = {}) {
+  const value = readVolume(volumeSlider.value);
   audio.volume = preview.volume = value / 100;
   $('volumeValue').textContent = `${value}%`;
-  try { localStorage.setItem('weight-watch-volume', String(value)); } catch { /* optional preference */ }
+  if (!persist) return;
+  try {
+    localStorage.setItem('weight-watch-volume', String(value));
+    localStorage.setItem('weight-watch-volume-version', VOLUME_PREF_VERSION);
+  } catch { /* optional preference */ }
 }
-$('volume').addEventListener('input', setVolume);
+
+// On touch screens, vertical swipes should scroll the page instead of changing
+// the slider. A touch adjustment only starts after a clear horizontal drag.
+let volumeTouch = null;
+volumeSlider.addEventListener('pointerdown', (event) => {
+  if (event.pointerType !== 'touch') return;
+  volumeTouch = {
+    pointerId: event.pointerId,
+    startX: event.clientX,
+    startY: event.clientY,
+    startValue: volumeSlider.value,
+    dragging: false,
+    scrolling: false
+  };
+});
+volumeSlider.addEventListener('pointermove', (event) => {
+  if (!volumeTouch || event.pointerId !== volumeTouch.pointerId) return;
+  const dx = Math.abs(event.clientX - volumeTouch.startX);
+  const dy = Math.abs(event.clientY - volumeTouch.startY);
+  if (!volumeTouch.dragging && !volumeTouch.scrolling) {
+    if (dy >= 8 && dy > dx) volumeTouch.scrolling = true;
+    else if (dx >= 10 && dx > dy) volumeTouch.dragging = true;
+  }
+  if (!volumeTouch.dragging) {
+    volumeSlider.value = volumeTouch.startValue;
+    setVolume({ persist: false });
+  }
+});
+volumeSlider.addEventListener('input', () => {
+  if (volumeTouch && !volumeTouch.dragging) {
+    volumeSlider.value = volumeTouch.startValue;
+    setVolume({ persist: false });
+    return;
+  }
+  setVolume();
+});
+function finishVolumeTouch(event) {
+  if (!volumeTouch || event.pointerId !== volumeTouch.pointerId) return;
+  if (!volumeTouch.dragging) {
+    volumeSlider.value = volumeTouch.startValue;
+    setVolume({ persist: false });
+  }
+  volumeTouch = null;
+}
+volumeSlider.addEventListener('pointerup', finishVolumeTouch);
+volumeSlider.addEventListener('pointercancel', finishVolumeTouch);
 setVolume();
 audio.addEventListener('pause', () => {
   if (wantsPlay && !audio.ended) {
