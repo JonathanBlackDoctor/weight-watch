@@ -1,7 +1,7 @@
 import { formatTime, nextCue, readVolume } from './timer.js';
 
 const AUDIO_VERSION = 'long-beep-1';
-const CACHE = 'weight-watch-v4';
+const CACHE = 'weight-watch-v6';
 const assetURL = (path) => `./assets/${path}?v=${AUDIO_VERSION}`;
 
 const $ = (id) => document.getElementById(id);
@@ -17,6 +17,31 @@ let sampleURL;
 let operation = 0;
 let preparing;
 let assetURLs = [];
+let audioContext;
+let timerGain;
+let previewGain;
+
+function ensureAudioBoost() {
+  if (!audioContext) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+    audioContext = new AudioContextClass();
+
+    const timerSource = audioContext.createMediaElementSource(audio);
+    const previewSource = audioContext.createMediaElementSource(preview);
+    timerGain = audioContext.createGain();
+    previewGain = audioContext.createGain();
+
+    // About +7 dB at 100%. The source track itself has headroom, so this makes
+    // cues stand out over music without changing the user's system volume.
+    timerGain.gain.value = 2.25;
+    previewGain.gain.value = 2.25;
+
+    timerSource.connect(timerGain).connect(audioContext.destination);
+    previewSource.connect(previewGain).connect(audioContext.destination);
+  }
+  if (audioContext.state === 'suspended') return audioContext.resume();
+}
 
 async function loadAudio() {
   const response = await fetch(assetURL('audio.json'));
@@ -89,6 +114,21 @@ async function prepare() {
       audio.load();
     });
     preview.src = sampleURL;
+    preview.load();
+    await new Promise((resolve, reject) => {
+      if (preview.readyState >= 2) return resolve();
+      const timeout = setTimeout(() => finish(new Error('preview decoding')), 10000);
+      const onReady = () => finish();
+      const onError = () => finish(new Error('preview format'));
+      const finish = (error) => {
+        clearTimeout(timeout);
+        preview.removeEventListener('loadeddata', onReady);
+        preview.removeEventListener('error', onError);
+        error ? reject(error) : resolve();
+      };
+      preview.addEventListener('loadeddata', onReady, { once: true });
+      preview.addEventListener('error', onError, { once: true });
+    });
     ready = true;
     message('0.7초 부저음 준비 완료. 소리 미리 듣기로 확인하세요.');
     // The complete track is in memory; no network request or JS alarm is needed during a session.
@@ -113,6 +153,7 @@ async function play() {
   if (audio.ended) audio.currentTime = 0;
   render();
   try {
+    await ensureAudioBoost();
     await audio.play();
     if (token !== operation) return;
     message('30초마다 짧은 소리, 매분 경과 시간을 알려드려요.');
@@ -144,9 +185,32 @@ $('reset').addEventListener('click', () => {
   render();
 });
 $('soundTest').addEventListener('click', async () => {
-  if (!audio.paused) return;
+  if (!audio.paused || !ready) return;
+  preview.pause();
   preview.currentTime = 0;
-  try { await preview.play(); } catch { message('소리 재생을 허용한 뒤 다시 눌러 주세요.', true); }
+  try {
+    await ensureAudioBoost();
+    if (preview.readyState < 2) {
+      await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => finish(new Error('preview timeout')), 5000);
+        const onReady = () => finish();
+        const onError = () => finish(new Error('preview error'));
+        const finish = (error) => {
+          clearTimeout(timeout);
+          preview.removeEventListener('canplay', onReady);
+          preview.removeEventListener('error', onError);
+          error ? reject(error) : resolve();
+        };
+        preview.addEventListener('canplay', onReady, { once: true });
+        preview.addEventListener('error', onError, { once: true });
+        preview.load();
+      });
+    }
+    await preview.play();
+    message('증폭된 안내음을 재생 중입니다.');
+  } catch {
+    message('미리 듣기를 재생하지 못했습니다. 페이지를 새로고침한 뒤 다시 눌러 주세요.', true);
+  }
 });
 $('retry').addEventListener('click', () => { preparing = prepare(); });
 const volumeSlider = $('volume');
